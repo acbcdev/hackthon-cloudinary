@@ -1,3 +1,4 @@
+import type { CoreAssistantMessage, CoreSystemMessage, CoreToolMessage, CoreUserMessage } from "ai";
 import { create } from "zustand";
 
 // type Narrative = {
@@ -23,6 +24,14 @@ type ChatItem = {
 type States = {
 	img: { public_id: string; secure_url: string; local: string };
 	history: ChatItem[];
+	loading: {
+		loading: boolean;
+		img: boolean;
+		options: boolean;
+		text: boolean;
+	}
+
+	messages: Array<CoreSystemMessage | CoreUserMessage | CoreAssistantMessage | CoreToolMessage>,
 	maxHistory: number;
 	selectedOptions: Record<string, string>;
 };
@@ -31,10 +40,27 @@ type Actions = {
 	addToHistory: (narrative: ChatItem) => void;
 	updateHistory: (narrative: ChatItem[]) => void;
 	addToSelectedOptions: (id: number, selection: string) => void;
+	removeSelectedOptions: (id: States["selectedOptions"]) => void;
+	addToMessages: (message: CoreSystemMessage | CoreUserMessage | CoreAssistantMessage | CoreToolMessage) => void;
+	setLoading: (loading: States['loading']) => void;
+
 };
 export const useStore = create<States & Actions>((set) => ({
 	img: { public_id: "", secure_url: "", local: "" },
 	maxHistory: 5,
+	loading: {
+		loading: false,
+		img: false,
+		options: false,
+		text: false,
+	},
+
+	messages: [{ role: "system", content: "que las historia sea coherente, aterradora, y que avance la trama de forma interesante" }],
+	setLoading: (loading) => set((state) => ({
+		...state,
+		loading,
+	})),
+	addToMessages: (message) => set((state) => ({ messages: [...state.messages, message] })),
 	history: [
 		{
 			type: "text",
@@ -46,6 +72,10 @@ export const useStore = create<States & Actions>((set) => ({
 	addToSelectedOptions: (id, selection) =>
 		set((state) => ({
 			selectedOptions: { ...state.selectedOptions, [id]: selection },
+		})),
+	removeSelectedOptions: (newSelected) =>
+		set(({
+			selectedOptions: newSelected,
 		})),
 	uploadImg: (img) => set({ img }),
 	addToHistory: (narrative) =>

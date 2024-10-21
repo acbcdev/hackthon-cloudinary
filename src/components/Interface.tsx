@@ -1,28 +1,33 @@
 "use client";
 import { useStore } from "@/lib/store";
 import { CldImage } from "next-cloudinary";
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import { genUniqueId } from "@/lib/utils";
 import { continueHistory } from "@/actions/ai";
 import { useSearchParams } from 'next/navigation'
+import SkeletonInterface from "./SkeletonInterface";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Interface({ options, }: { options: string[], }) {
-	const { history, addToHistory, addToSelectedOptions, selectedOptions, maxHistory } =
+	const { history, addToHistory, addToSelectedOptions, selectedOptions, maxHistory, setLoading, loading, removeSelectedOptions } =
 		useStore();
 	const searchParams = useSearchParams();
 	const imgPublicId = searchParams.get('img')
 	const scrollAreaEndRef = useRef<HTMLDivElement>(null);
+	const { toast } = useToast();
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
+		setLoading({ ...loading, options: true, })
+		addToHistory({
+			type: "options",
+			id: genUniqueId(),
+			options,
+		})
+		setLoading({ ...loading, options: false, })
 
-		if (history.filter((i) => i.type === "options").length === 0)
-			addToHistory({
-				type: "options",
-				id: genUniqueId(),
-				options,
-			});
-	}, []);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
@@ -32,31 +37,47 @@ export default function Interface({ options, }: { options: string[], }) {
 				block: "end",
 			});
 		}
-	}, [history]);
+	}, [history, loading]);
 
 	async function handleSelection(selection: string, id: number) {
+		const withImage = history.length % 3 === 0
+		setLoading({ ...loading, options: true, text: true, img: withImage })
 		addToSelectedOptions(id, selection);
-		const { object } = await continueHistory(
-			history
-				.filter((i) => i.type === "text")
-				.map((i) => i.content)
-				.join(" "), selection
-		);
-		if (history.filter((i) => i.type === "options").length <= maxHistory) {
-			addToHistory({
-				type: "text",
-				content: object.history,
-				promptImage: object.promptImage,
-				id: genUniqueId(),
-			});
-			addToHistory({
-				type: "options",
-				content: "Elige una opción:",
-				options: object.options,
-				id: genUniqueId(),
-			});
-
+		// addToMessages({ role: 'user', content: selection })
+		try {
+			const { object } = await continueHistory(
+				history.filter(({ type }) => type === 'text').join('\n'),
+				selection,
+			);
+			if (history.filter((i) => i.type === "options").length <= maxHistory) {
+				addToHistory({
+					type: "text",
+					content: object.history,
+					promptImage: withImage ? object.promptImage : "",
+					id: genUniqueId(),
+				});
+				addToHistory({
+					type: "options",
+					content: "Elige una opción:",
+					options: object.options,
+					id: genUniqueId(),
+				})
+				// addToMessages({ role: 'assistant', content: `${object.history} \n ${object.options.join(", ")}` })
+				setLoading({ ...loading, options: false, text: false, img: false })
+			}
 		}
+		catch (error) {
+			setLoading({ ...loading, options: false, text: false, img: false })
+			toast({
+				title: "Error",
+				variant: 'destructive',
+				description: "Ocurrió un error al generar la historia intentalo de nuevo",
+			})
+			removeSelectedOptions({ ...selectedOptions, [id]: undefined })
+			console.error(error);
+		}
+
+
 	}
 	return (
 		<div
@@ -68,13 +89,13 @@ export default function Interface({ options, }: { options: string[], }) {
 					<article key={item.id} className="mb-4 space-y-2">
 						{item.type === "text" ? (
 							<>
-								<p className=" p-3 bg-secondary rounded-2xl shadow ">
+								<p className=" p-3 ">
 									{item.content}
 								</p>
 
 								{
-									imgPublicId && item.promptImage &&
-									<CldImage
+									imgPublicId && item.promptImage && history.filter(({ type }) => type === "options").length % 2 === 0 &&
+									< CldImage
 										width="300"
 										height="300"
 										src={imgPublicId}
@@ -96,6 +117,7 @@ export default function Interface({ options, }: { options: string[], }) {
 									className="flex flex-wrap gap-2"
 									aria-label="Opciones de selección"
 								>
+
 									{item.options?.map((option) => (
 										<Button
 											key={option}
@@ -121,6 +143,7 @@ export default function Interface({ options, }: { options: string[], }) {
 						)}
 					</article>
 				))}
+			<SkeletonInterface />
 		</div>
 	);
 }
