@@ -30,6 +30,7 @@ const ImageUpload = () => {
 			public_id: img.public_id,
 			secure_url: img.secure_url,
 			local: "",
+			description: ''
 		});
 	}
 	return (
