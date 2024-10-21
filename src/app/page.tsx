@@ -32,7 +32,7 @@ export default async function Home() {
 						<Image
 							src={img.url}
 							alt="base Images"
-							className="rounded-xl"
+							className="rounded-xl hover:scale-110 duration-200 hover:z-10"
 							width={200}
 							height={200}
 						/>

@@ -9,8 +9,8 @@ import { useSearchParams } from 'next/navigation'
 import SkeletonInterface from "./SkeletonInterface";
 import { useToast } from "@/hooks/use-toast";
 
-export default function Interface({ options, }: { options: string[], }) {
-	const { history, addToHistory, addToSelectedOptions, selectedOptions, maxHistory, setLoading, loading, removeSelectedOptions } =
+export default function Interface({ options, imgDescription }: { options: string[], imgDescription: string }) {
+	const { history, addToHistory, uploadImg, img, addToSelectedOptions, selectedOptions, maxHistory, setLoading, loading, removeSelectedOptions } =
 		useStore();
 	const searchParams = useSearchParams();
 	const imgPublicId = searchParams.get('img')
@@ -23,6 +23,7 @@ export default function Interface({ options, }: { options: string[], }) {
 			id: genUniqueId(),
 			options,
 		})
+		uploadImg({ ...img, description: imgDescription })
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
@@ -42,9 +43,11 @@ export default function Interface({ options, }: { options: string[], }) {
 		addToSelectedOptions(id, selection);
 		// addToMessages({ role: 'user', content: selection })
 		try {
-			const { object } = await continueHistory(
-				history.filter(({ type }) => type === 'text').join('\n'),
-				selection,
+			const { object } = await continueHistory({
+				prev: history.filter(({ type }) => type === 'text').join('\n'),
+				select: selection,
+				imageDescription: imgDescription,
+			}
 			);
 			if (history.filter((i) => i.type === "options").length <= maxHistory) {
 				addToHistory({

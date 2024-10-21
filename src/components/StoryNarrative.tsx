@@ -7,7 +7,8 @@ import { useToast } from "@/hooks/use-toast";
 export default function StoryNarrative({
 	img,
 	options,
-}: { img: string; options: string[] }) {
+	imgDescription
+}: { img: string; options: string[], imgDescription: string }) {
 	const router = useRouter();
 	const { toast } = useToast();
 	return (
@@ -30,7 +31,7 @@ export default function StoryNarrative({
 					height={300}
 				// placeholder="blur"
 				/>
-				<Interface options={options} />
+				<Interface options={options} imgDescription={imgDescription} />
 			</section>
 		</>
 	);

@@ -22,7 +22,7 @@ type ChatItem = {
 };
 
 type States = {
-	img: { public_id: string; secure_url: string; local: string };
+	img: { public_id: string; secure_url: string; local: string, description: string };
 	history: ChatItem[];
 	loading: {
 		loading: boolean;
@@ -46,7 +46,7 @@ type Actions = {
 
 };
 export const useStore = create<States & Actions>((set) => ({
-	img: { public_id: "", secure_url: "", local: "" },
+	img: { public_id: "", secure_url: "", local: "", description: "" },
 	maxHistory: 5,
 	loading: {
 		loading: false,

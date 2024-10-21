@@ -44,7 +44,7 @@ Genera las siguientes opciones:
 `,
 		});
 
-		return { options: initialOptions.options }
+		return { options: initialOptions.options, imgDescription: imageDescription }
 
 	}
 	catch {
@@ -52,7 +52,7 @@ Genera las siguientes opciones:
 	}
 }
 
-export async function continueHistory(prev: string, select: string) {
+export async function continueHistory({ prev, select, imageDescription }: { prev: string, select: string, imageDescription: string }) {
 	const { object } = await generateObject({
 		model: google("gemini-1.5-flash"),
 		temperature: 1,
@@ -66,7 +66,11 @@ export async function continueHistory(prev: string, select: string) {
 				.array(z.string().describe("Opciones para continuar la historia. que no sea tan larga maximo 25 caracteres ej: el  fantastama de dracula or zombie dog "))
 				.describe("Opciones para continuar la historia."),
 		}),
-		prompt: `Continuae la historia de terror teniendo en cuenta los siguientes mensajes previos:
+		prompt: `
+				esta es la descripcion de la image ${imageDescription}
+				
+				Continuae la historia de terror teniendo en cuenta los siguientes mensajes previos:
+
 				${prev}
 
 				el usario seleciono la opcion: ${select}

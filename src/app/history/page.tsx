@@ -16,9 +16,9 @@ export default async function page({
 		src: searchParams.img,
 	});
 
-	const { options, error } = await generetaImageDescription(url);
+	const { options, error, imgDescription } = await generetaImageDescription(url);
 	console.log({ options });
 	if (error) revalidatePath("/history");
-	return <DynamicInterface img={url} options={options.map((i) => i.label)} />;
+	return <DynamicInterface imgDescription={imgDescription ?? ''} img={url} options={options.map((i) => i.label)} />;
 
 }
