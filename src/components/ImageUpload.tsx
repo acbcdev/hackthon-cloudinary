@@ -64,11 +64,11 @@ const ImageUpload = () => {
 								})
 							}
 						}}
-						className="py-8 px-10 "
+						className="py-8 px-10 w-fit mx-auto "
 						variant={"secondary"}
 						ref={btnRef}
 					>
-						Upload Image <Kbd>Ctrl</Kbd>+<Kbd>i</Kbd>
+						Subir Image <Kbd>Ctrl</Kbd>+<Kbd>i</Kbd>
 					</Button>
 				);
 			}}

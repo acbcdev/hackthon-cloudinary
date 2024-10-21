@@ -12,11 +12,10 @@ export default function SkeletonInterface() {
         <Skeleton className="w-[80%] h-10" />
       </div>}
       {loading.img && <Skeleton className="aspect-square h-60 w-full" />}
-      {loading.options && <div className="flex gap-x-2 p-4">
-        <Skeleton className="w-32 h-10" />
-        <Skeleton className="w-32 h-10" />
-        <Skeleton className="w-32 h-10" />
-
+      {loading.options && <div className="flex f gap-x-2 p-4">
+        <Skeleton className="w-20  md:w-32 h-10" />
+        <Skeleton className="w-20  md:w-32 h-10" />
+        <Skeleton className="w-20  md:w-32 h-10" />
       </div>}
     </div>
   );

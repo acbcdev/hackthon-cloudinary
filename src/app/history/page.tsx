@@ -1,5 +1,6 @@
 import { generetaImageDescription } from "@/actions/ai";
 import DynamicInterface from "@/components/DynamicInterface";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getCldImageUrl } from "next-cloudinary";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -20,4 +21,5 @@ export default async function page({
 	console.log({ options });
 	if (error) revalidatePath("/history");
 	return <DynamicInterface img={url} options={options.map((i) => i.label)} />;
+
 }

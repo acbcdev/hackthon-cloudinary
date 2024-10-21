@@ -18,14 +18,11 @@ export default function Interface({ options, }: { options: string[], }) {
 	const { toast } = useToast();
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		setLoading({ ...loading, options: true, })
 		addToHistory({
 			type: "options",
 			id: genUniqueId(),
 			options,
 		})
-		setLoading({ ...loading, options: false, })
-
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 

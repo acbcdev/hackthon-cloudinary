@@ -63,7 +63,7 @@ export async function continueHistory(prev: string, select: string) {
 				.describe("Continúa la historia con base en los mensajes previos. y la selecion dada"),
 			promptImage: z.string().optional().describe('es un descripcion parra genera un image en base a la historia lo ideal es que sea como el entorno'),
 			options: z
-				.array(z.string())
+				.array(z.string().describe("Opciones para continuar la historia. que no sea tan larga maximo 25 caracteres ej: el  fantastama de dracula or zombie dog "))
 				.describe("Opciones para continuar la historia."),
 		}),
 		prompt: `Continuae la historia de terror teniendo en cuenta los siguientes mensajes previos:
@@ -87,7 +87,7 @@ export async function continueHistoryV2(messages: Array<CoreSystemMessage | Core
 		schema: z.object({
 			history: z
 				.string()
-				.describe("Continúa la historia con base en los mensajes previos. y la selecion dada"),
+				.describe("Continúa la historia con base en los mensajes previos. y la selecion dada un maxiomo de 25 caracteres"),
 			promptImage: z.string().optional().describe('es un descripcion parra genera un image en base a la historia lo ideal es que sea como el entorno'),
 			options: z
 				.array(z.string())
