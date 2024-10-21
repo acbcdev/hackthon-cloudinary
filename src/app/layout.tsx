@@ -24,6 +24,7 @@ const midNight = localFont({
 
 export const metadata: Metadata = {
 	title: "Spooky Histories",
+	description: 'Explora el Creador de Historias de Terror impulsado por imágenes. Transforma cualquier imagen en un relato aterrador con nuestra herramienta innovadora, diseñada para el Hackathon de Cloudinary. ¡Sumérgete en el misterio y el horror!'
 };
 
 export default function RootLayout({
