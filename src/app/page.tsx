@@ -1,5 +1,4 @@
 import ImageUpload from "@/components/ImageUpload";
-import { getCldImageUrl } from 'next-cloudinary';
 import Image from "next/image";
 import Link from "next/link";
 

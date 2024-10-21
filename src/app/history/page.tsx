@@ -1,6 +1,5 @@
 import { generetaImageDescription } from "@/actions/ai";
 import DynamicInterface from "@/components/DynamicInterface";
-import { Skeleton } from "@/components/ui/skeleton";
 import { getCldImageUrl } from "next-cloudinary";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
