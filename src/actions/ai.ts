@@ -1,7 +1,8 @@
 "use server";
 import { generateObject, generateText, } from "ai";
 import { google } from "@ai-sdk/google";
-import { mistral } from '@ai-sdk/mistral';
+import type { CoreAssistantMessage, CoreSystemMessage, CoreToolMessage, CoreUserMessage } from "ai";
+//import { mistral } from '@ai-sdk/mistral';
 import { z } from "zod";
 
 
@@ -46,7 +47,7 @@ Genera las siguientes opciones:
 		return { options: initialOptions.options }
 
 	}
-	catch (error) {
+	catch {
 		return { error: true, options: [] }
 	}
 }
@@ -67,9 +68,36 @@ export async function continueHistory(prev: string, select: string) {
 		}),
 		prompt: `Continuae la historia de terror teniendo en cuenta los siguientes mensajes previos:
 				${prev}
+
+				el usario seleciono la opcion: ${select}
 				Asegúrate de que la continuación sea coherente, aterradora, y que avance la trama de forma interesante.
 				Genera	yield dos o tres opciones para que el usuario decidacontinuar.
 			`
+	})
+	return { object };
+}
+export async function continueHistoryV2(messages: Array<CoreSystemMessage | CoreUserMessage | CoreAssistantMessage | CoreToolMessage>) {
+	const { object } = await generateObject({
+		model: google("gemini-1.5-flash"),
+		temperature: 1,
+		messages,
+		system: `que las historia sea coherente, aterradora, y que avance la trama de forma interesante
+						responde como el usario seleciono la opcion:
+		`,
+		schema: z.object({
+			history: z
+				.string()
+				.describe("Continúa la historia con base en los mensajes previos. y la selecion dada"),
+			promptImage: z.string().optional().describe('es un descripcion parra genera un image en base a la historia lo ideal es que sea como el entorno'),
+			options: z
+				.array(z.string())
+				.describe("Opciones para continuar la historia."),
+		}),
+		// prompt: `Continuae la historia de terror teniendo en cuenta los siguientes mensajes previos:
+		// 		el usario seleciono la opcion: ${selecion}
+		// 		Asegúrate de que la continuación sea coherente, aterradora, y que avance la trama de forma interesante y que sea relacianada  a la selecion dada.
+		// 		Genera yield dos o tres  opciones para que el usuario decidacontinuar.
+		// 	`
 	})
 	return { object };
 }

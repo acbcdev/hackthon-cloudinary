@@ -6,15 +6,17 @@ import {
 } from "next-cloudinary";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/lib/store";
-import { useState, useRef } from "react";
+import { useRef } from "react";
 // import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 const ImageUpload = () => {
 	const { uploadImg } = useStore();
 	const router = useRouter();
+	const { toast } = useToast()
 	// const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const btnRef = useRef<HTMLButtonElement>(null);
 	useHotkeys("ctrl+i", () => {
@@ -40,7 +42,7 @@ const ImageUpload = () => {
 			onSuccess={(result) => {
 				uploadedImage(result?.info ?? "");
 			}}
-			onQueuesEnd={(rta, { widget }) => {
+			onQueuesEnd={() => {
 				document.body.style.overflow = "auto";
 			}}
 			onUploadAdded={() => console.log("Upload added")}
@@ -50,7 +52,17 @@ const ImageUpload = () => {
 				return (
 					<Button
 						onClick={() => {
-							if (open) open();
+							try {
+								if (open) open();
+							}
+							catch {
+								toast({
+									title: "Error",
+									description: "Try Again",
+									duration: 3000,
+									variant: "destructive",
+								})
+							}
 						}}
 						className="py-8 px-10 "
 						variant={"secondary"}
