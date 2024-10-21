@@ -15,6 +15,7 @@ body {
 
 @layer base {
   :root {
+    --font-midnight: "Midnight", serif;
     --background: 289 47% 100%;
     --foreground: 289 50% 3%;
     --muted: 289 39% 85%;
