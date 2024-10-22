@@ -36,7 +36,7 @@ const ImageUpload = () => {
 	return (
 		<CldUploadWidget
 			options={{
-				sources: ["local", "unsplash"],
+				sources: ["local"],
 				multiple: false,
 				maxFiles: 1,
 			}}
