@@ -34,12 +34,12 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
+		<html lang="es">
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} ${midNight.variable} antialiased dark min-h-screen overflow-y-auto bg-background`}
 			>
 				<Link href='/'>
-					<img src="../icon.svg" alt="Icons" className="absolute hover:scale-105  duration-200 top-2 left-2 w-14" />
+					<img src="../icon.svg" alt="Icono de Spooky Histories logo " className="absolute hover:scale-105  duration-200 top-2 left-2 w-14" />
 				</Link>
 				{children}
 				<Toaster />
