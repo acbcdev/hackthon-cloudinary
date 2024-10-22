@@ -38,7 +38,7 @@ export default function Interface({ options, imgDescription }: { options: string
 	}, [history, loading]);
 
 	async function handleSelection(selection: string, id: number) {
-		const withImage = history.length % 3 === 0
+		const withImage = (history.filter((i) => i.type === "options").length - 1) % 2 === 0
 		setLoading({ ...loading, options: true, text: true, img: withImage })
 		addToSelectedOptions(id, selection);
 		// addToMessages({ role: 'user', content: selection })
@@ -63,7 +63,6 @@ export default function Interface({ options, imgDescription }: { options: string
 					id: genUniqueId(),
 				})
 				// addToMessages({ role: 'assistant', content: `${object.history} \n ${object.options.join(", ")}` })
-				setLoading({ ...loading, options: false, text: false, img: false })
 			}
 		}
 		catch (error) {
@@ -75,6 +74,9 @@ export default function Interface({ options, imgDescription }: { options: string
 			})
 			removeSelectedOptions({ ...selectedOptions, [id]: undefined })
 			console.error(error);
+		}
+		finally {
+			setLoading({ ...loading, options: false, text: false, })
 		}
 
 
@@ -94,13 +96,14 @@ export default function Interface({ options, imgDescription }: { options: string
 								</p>
 
 								{
-									imgPublicId && item.promptImage && history.filter(({ type }) => type === "options").length % 2 === 0 &&
+									imgPublicId && item.promptImage &&
 									< CldImage
 										width="300"
 										height="300"
+										onLoad={() => setLoading({ ...loading, img: false })}
 										src={imgPublicId}
 										sizes="100vw"
-										className="rounded-xl"
+										className="rounded-xl mx-auto"
 										replaceBackground={{
 											prompt: item.promptImage,
 										}}
