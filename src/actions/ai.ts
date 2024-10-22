@@ -61,9 +61,9 @@ export async function continueHistory({ prev, select, imageDescription }: { prev
 			history: z
 				.string()
 				.describe("Continúa la historia con base en los mensajes previos. y la selecion dada"),
-			promptImage: z.string().optional().describe('es un descripcion parra genera un image en base a la historia lo ideal es que sea como el entorno'),
+			promptImage: z.string().optional().describe('es un descripcion parra genera un fondo de image pero que sea muy minimo que  maximo 4 palabras sobre la historia ej: un fondo sombrio o un fondo con fantasmas  '),
 			options: z
-				.array(z.string().describe("Opciones para continuar la historia. que no sea tan larga maximo 25 caracteres ej: el  fantastama de dracula or zombie dog "))
+				.array(z.string().describe("Opciones para continuar la historia. que no sea tan larga maximo 3 palabras ej: el  fantastama de dracula or zombie dog "))
 				.describe("Opciones para continuar la historia."),
 		}),
 		prompt: `
